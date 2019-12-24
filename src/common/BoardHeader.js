@@ -3,9 +3,10 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
+import HomeIcon from '@material-ui/icons/Home';
+import AddIcon from '@material-ui/icons/Add';
+import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -20,31 +21,28 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-export default function Header() {
+export default function BoardHeader() {
   const classes = useStyles();
 
   return (
     <div className={classes.root}>
-      <AppBar position="static" style={{ background: '#2E3B55', textAlign: 'center' }}>
+      <AppBar position="static" style={{ background: '#2E3B55' }}>
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
-            <MenuIcon />
+            <HomeIcon />
           </IconButton>
-          <Typography variant="h6" className={classes.title}>
+          <Typography variant="h5" className={classes.title} >
             Mozzarello
           </Typography>
-          <Button variant="contained" color="secondary" style = {styles.buttonMargin}>로그인</Button>
-          <Button variant="contained" color="primary" style = {styles.buttonMargin}>회원가입</Button>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <AddIcon />
+          </IconButton>          
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <ErrorOutlineIcon />
+          </IconButton>
+          <p>환영합니다. 김태중님</p>
         </Toolbar>
       </AppBar>
     </div>
   );
-}
-
-const styles = {
-  buttonMargin : 
-  {
-    marginRight : '12px'
-  }  
-
 }

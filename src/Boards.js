@@ -1,5 +1,7 @@
 import React from 'react';
-import Header from './common/Header';
+
+import AddBoard from './boards/addBoard';
+import BoardHeader from './common/BoardHeader';
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 
 
@@ -13,6 +15,7 @@ export default class Boards extends React.Component {
     this.stateChange  = this.stateChange.bind(this);
     this.multipleElements = this.multipleElements.bind(this);
     this.separateElement = this.separateElement.bind(this);
+    this.showAddBoard = this.showAddBoard.bind(this)
   }
   
 targetList(event){
@@ -24,6 +27,9 @@ stateChange(targetName) {
   this.setState = ({ 
     hoverTarget : targetName
   })
+}
+showAddBoard(){
+
 }
 multipleElements(Boards) {
   // 여기 참고 https://bit.ly/2Z6LhaP
@@ -96,12 +102,12 @@ separateElement (Boards) {
  }    
 
 render(){
-  let recentBoards = ['recent1','recent2','addBoard']
-  let allBoards = ['test1','test2','test3','test4','test5', 'test6', 'test7']
+  let recentBoards = ['recent1','recent2']
+  let allBoards = ['test1','test2','test3','test4','test5', 'test6', 'test7','addBoard']
   console.log(this.state)
   return (
       <div>
-        <Header />
+        <BoardHeader />
         <div style = {styles.listsWrapper}>
           <div>
             <h3>최근 조회</h3>
@@ -120,6 +126,7 @@ render(){
             }           
             </ul>
         </div>
+        <AddBoard />
     </div>
     );
   }
