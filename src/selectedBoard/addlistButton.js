@@ -1,30 +1,30 @@
 import React from 'react';
-import AddIcon from '@material-ui/icons/Add';
 
+import AddIcon from '@material-ui/icons/Add';
 
 export default function AddListButton(props){  
     return (
         <div href = "#" style = {styles.aTag} onClick = {props.addContent}>
             <span className = "placeholder" >
-                <span className = "addListElements" style = {styles.addListElements}>
+                <span className = "addListElements" style = {styles.createListElements}>
                     <AddIcon />
                 </span>
-                <span style = {styles.addListElements}>
+                <span style = {styles.createListElements}>
                     리스트 추가
-                </span>                                
+                </span>                              
             </span>                            
         </div>  
     );
 }
 
 const styles = {
-    addListElements : {
+    aTag: {
+        textDecoration: "none",
+    },
+    createListElements : {
         color:"black",
         display: "table-cell", 
         lineHeight: "0px",
         verticalAlign : "middle",
-    },
-    aTag: {
-        textDecoration: "none",
-    },
+    },    
 }

@@ -1,4 +1,7 @@
 import React from 'react';
+
+import { Link } from "react-router-dom";
+
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -33,8 +36,16 @@ export default function Header() {
           <Typography variant="h6" className={classes.title}>
             Mozzarello
           </Typography>
-          <Button variant="contained" color="secondary" style = {styles.buttonMargin}>로그인</Button>
-          <Button variant="contained" color="primary" style = {styles.buttonMargin}>회원가입</Button>
+          <Link to="/Login" style = {styles.linkStyle}>
+            <Button variant="contained" color="secondary" style = {styles.buttonMargin}>            
+              로그인
+            </Button>
+          </Link>                                
+          <Link to="/SignUp" style = {styles.linkStyle}>
+            <Button variant="contained" color="primary" style = {styles.buttonMargin}>
+              회원가입
+            </Button>
+          </Link>              
         </Toolbar>
       </AppBar>
     </div>
@@ -42,9 +53,12 @@ export default function Header() {
 }
 
 const styles = {
-  buttonMargin : 
+  buttonMargin :   
   {
     marginRight : '12px'
-  }  
-
+  },
+  linkStyle : 
+  {
+    textDecoration: "none",
+  }
 }

@@ -10,9 +10,9 @@
   border-radius: "3px";
   width: "calc(100% - 16px)";
 }
-input:focus {
+/* input:focus {
   background-color: yellow;
-}
+} */
 .primary{
 color :orange
 }

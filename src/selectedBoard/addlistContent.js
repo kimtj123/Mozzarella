@@ -1,10 +1,12 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
+import CloseIcon from '@material-ui/icons/Close';
 
 
 export default function addlistContent(props){    
 
-    console.log(props.addContent)
+    console.log("리스트추가창 닫기 :: ",props.closeAddContent)
     return (
     <div className = "addCardWrapper">
         <div className = "addCardTextAreaWrapper" style = {styles.listCardDetailWrapper}>
@@ -13,10 +15,13 @@ export default function addlistContent(props){
                 placeholder = "내용을 입력하세요."
                 />                 
         </div>        
-        <div className = "addCardButtonWrapper" >
+        <div className = "addCardButtonWrapper" style = {{display : "flex"}}>
             <Button onClick = {props.addContent} variant="contained" color="primary" href="#contained-buttons">
-            카드 추가
+            리스트   추가
             </Button>     
+            <IconButton onClick = {props.closeAddContent} style = {styles.closeListElements}>
+                <CloseIcon style={{ fontSize: 36 }}/>
+            </IconButton>   
         </div>
     </div>
     )
@@ -24,6 +29,13 @@ export default function addlistContent(props){
 
 
 const styles = {
+closeListElements : {
+    color:"black",
+    display: "table-cell", 
+    lineHeight: "0px",
+    padding : "0px 0px 0px 5px",    
+    verticalAlign : "middle",
+},    
 listCardDetailWrapper : {    
     background : "white",
     borderRadius: "3px",

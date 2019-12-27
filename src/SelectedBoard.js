@@ -17,6 +17,7 @@ export default class Boards extends React.Component {
     }
     this.inputFocus = this.inputFocus.bind(this);
     this.addContent = this.addContent.bind(this);
+    this.closeAddContent = this.closeAddContent .bind(this);
 }
 
 inputFocus(event){      
@@ -25,10 +26,12 @@ inputFocus(event){
 
 addContent(){
     this.state.add === true ? 
-    this.setState({ add : false}) :
-    this.setState({ add : true})          
+    this.setState({ add : false }) :
+    this.setState({ add : true })           
 }
-
+closeAddContent(){
+    this.setState({ add : false })
+}
 render(){ 
     let generatedLists = ["ToDo","Doing"]
     let boardList = ["내용1","내용2","내용3"]
@@ -50,7 +53,7 @@ render(){
                         {
                             // open, close, submit 3단계로 나눠서 진행?
                             this.state.add ?
-                            <AddlistContent addContent = {this.addContent}/> :
+                            <AddlistContent addContent = {this.addContent} closeAddContent = {this.closeAddContent}/> :
                             <AddlistButton addContent = {this.addContent}/>             
                         }
                     </form>
