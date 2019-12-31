@@ -6,7 +6,6 @@ import BoardHeader from './common/BoardHeader';
 import BoardList from './selectedBoard/boardList';
 
 import AddIcon from '@material-ui/icons/Add';
-import Button from '@material-ui/core/Button';
 
 import "./App.css"
 
@@ -29,11 +28,17 @@ export default class Boards extends React.Component {
                 "boardList" : ["내용3-1","내용3-2","내용3-3"]
             },      
         ],
-        add : ""
+        add : "",
+        listContent : ""
     }
-    this.openAddList = this.openAddList.bind(this);
+
     this.addCard = this.addCard.bind(this);
+    this.addList = this.addList.bind(this);
+    this.changeCotent = this.changeCotent.bind(this);
+    this.listContent = this.listContent.bind(this);
+    this.openAddList = this.openAddList.bind(this);
     this.removeCard = this.removeCard.bind(this);
+    this.deleteList = this.deleteList .bind(this);
 }
 
 openAddList(event){
@@ -42,7 +47,8 @@ openAddList(event){
     console.log("콘텐츠 추가 :: ", this.state.add)
 }
 
-addCard(){
+addCard(e){
+    
     let currentList = Object.assign([], this.state.cardList);
     currentList.push(
         {   
@@ -50,16 +56,71 @@ addCard(){
             "boardList" : []
         }
     )
-    this.setState({cardList : currentList}) 
+    this.setState({
+        cardList : currentList,
+        listContent : ""
+    }) 
+}
+addList(e){
+    if(this.state.listContent !== "")
+    {   
+        let newCardList = Object.assign([], this.state.cardList);
+        
+        newCardList.forEach((val,index) => {
+            if(e.currentTarget.title === val.title)
+            {
+                val.boardList.push(this.state.listContent)
+            }
+        })
+        this.setState({
+            cardList : newCardList,
+            listContent : ""
+        })
+        console.log(this.state)
+        
+    } 
+}
+changeCotent(e){
+    let newCardList = Object.assign([], this.state.cardList);
+    newCardList.forEach((val, index) => {
+        if(val.title === e.target.defaultValue) // 카드 제목 수정
+        {
+            val.title = e.target.value;
+        }
+        else if(val.boardList.includes(e.target.defaultValue)) // 카드 리스트 내용 수정
+        {                        
+            let indexWillChange = val.boardList.indexOf(e.target.defaultValue);
+            val.boardList[indexWillChange] = e.target.value;
+            this.setState({
+                listContent : ""
+            })
+            console.log(this.state.listContent)
+        }
+    });
+    this.setState({cardList: newCardList})
+}
+deleteList(e){
+    // let newCardList = Object.assign([], this.state.cardList);
+    let newCardList = JSON.parse(JSON.stringify(this.state.cardList))
+    let parentIndex = e.currentTarget.parentNode;
+    console.log(parentIndex)
+    // newCardList.map((val,index)=>{
+    //     if(val.boardList.indexOf(parentIndex) !== -1)
+    //     {
+    //         val.boardList.splice(val.boardList.indexOf(parentIndex),1)
+    //     }
+    // })
+    console.log(newCardList)
+    this.setState({cardList: newCardList})
+ 
+}
+listContent(e){        
+    let content = e.target.value      
+    this.setState({listContent : content});
 }
 removeCard(e){        
-
-    console.log("e.currentTarget :: ", e.currentTarget.title)
-    console.log("e.detail :: ", e.detail)
-    console.log("e.target :: ", e.target)
-    
-    const products = this.state.cardList.filter(prod => prod.title !== e.currentTarget.title)
-    this.setState({cardList : products})
+    const newCard = this.state.cardList.filter(card => card.title !== e.currentTarget.title)
+    this.setState({cardList : newCard})
 }
 render(){     
     console.log(this.state.cardList)
@@ -72,25 +133,33 @@ render(){
             <div style = {{display: "inline-flex"}}>         
             {
                 this.state.cardList.map((val,index)=> 
-                <div className = "addListWrapper" style = {styles.addListWrapper} key = {val.title} title = {val.title}>
+                <div className = "addListWrapper" 
+                    style = {styles.addListWrapper} 
+                    key = {val.title} 
+                    title = {val.title}
+                >
                     <form>                                          
                         <BoardList 
-                            focus = {this.state.focus}
-                            title = {val.title}
+                            addList = {this.addList}
                             boardList = {val.boardList}
-                            removeCard = {this.removeCard}
+                            changeCotent = {this.changeCotent}
+                            deleteList = {this.deleteList}
+                            focus = {this.state.focus}
+                            listContent = {this.listContent}
+                            removeCard = {this.removeCard}                            
+                            title = {val.title}                            
                         /> 
                         <AddlistArea
-                        openAddList = {this.openAddList} 
-                        name = {val.title}
-                        state = {this.state.add} 
+                            openAddList = {this.openAddList} 
+                            state = {this.state.add} 
+                            title = {val.title}
                         />                                                                                                                    
                         <AddlistContent 
-                        openAddList = {this.openAddList} 
-                        closeAddList = {this.closeAddList} 
-                        name = {val.title}
-                        state = {this.state.add}
-                        addList = {this.addList}
+                            addList = {this.addList}
+                            listContent = {this.listContent}
+                            openAddList = {this.openAddList} 
+                            state = {this.state.add}
+                            title = {val.title}
                         />                         
                     </form>
                 </div>         

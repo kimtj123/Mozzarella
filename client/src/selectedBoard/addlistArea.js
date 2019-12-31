@@ -5,18 +5,18 @@ import AddIcon from '@material-ui/icons/Add';
 export default function AddListButton(props){  
     return (
         <div 
-        style = {props.state === props.name ? 
+        style = {props.state === props.title ? 
             styles.beforeClick :
             styles.afterClick 
         }  
-        name = {props.name}
+        name = {props.title}
         onClick = {props.openAddList}
         >
-            <span className = "placeholder" name = {props.name}>
+            <span className = "placeholder" name = {props.title}>
                 <span className = "addListElements" style = {styles.createListElements} name = {props.name}>
-                    <AddIcon name = {props.name}/>
+                    <AddIcon name = {props.title}/>
                 </span>
-                <span style = {styles.createListElements} name = {props.name}>
+                <span style = {styles.createListElements} name = {props.title}>
                     리스트 추가
                 </span>                              
             </span>                            

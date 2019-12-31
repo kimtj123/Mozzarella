@@ -5,24 +5,21 @@ import CloseIcon from '@material-ui/icons/Close';
 
 
 export default function addlistContent(props){    
-
-    // console.log("리스트추가창 닫기 :: ",props.closeAddContent)
-    // console.log("상태가 내려오는가",props.state)
-    // console.log("이름이 내려오는가",props.name)
     return (
     <div className = "addCardWrapper" 
         style = {
-        props.state === props.name ?
+        props.state === props.title ?
         {} : styles.beforeClick}                 
     >   
         <div className = "addCardTextAreaWrapper" style = {styles.listCardDetailWrapper}>
             <textarea className = {`addCardTextArea`}
                 style = {styles.listDetailsInput} 
                 placeholder = "내용을 입력하세요."
+                onChange = {props.listContent}
                 />                 
         </div>        
         <div className = "addCardButtonWrapper" style = {{display : "flex"}}>
-            <Button variant="contained" color="primary" >
+            <Button variant="contained" color="primary" onClick = {props.addList} title = {props.title}>
                 리스트   추가
             </Button>     
             <IconButton 

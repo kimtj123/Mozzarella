@@ -1,6 +1,6 @@
 import React from 'react';
 import IconButton from '@material-ui/core/IconButton';
-import CreateIcon from '@material-ui/icons/Create';
+import CloseIcon from '@material-ui/icons/Close';
 import DeleteIcon from '@material-ui/icons/Delete';
 
 export default class BoardList extends React.Component{    
@@ -20,24 +20,37 @@ export default class BoardList extends React.Component{
                     style = {styles.listNameInput} 
                     placeholder = "제목"                                                               
                     defaultValue = {this.props.title}
+                    onBlur = {this.props.changeCotent}
                 >
                 </input>
-                <div className = "list-add-control" onClick = {this.props.removeCard} title = {this.props.title}>
+                <div className = "list-add-control" 
+                    onClick = {this.props.removeCard} 
+                    title = {this.props.title}
+                >
                     <DeleteIcon />
                 </div>         
             </div>    
             {
                 boardList.map((content,index) => 
                 (
-                    <div className = "listCardDetailWrapper" style = {styles.listCardDetailWrapper} key = {index}>
+                    <div className = "listCardDetailWrapper" 
+                    style = {styles.listCardDetailWrapper} 
+                    key = {index}
+                    title = {this.props.title}
+                    
+                    >
                         <input className = "listDetailsInput"
                             style = {styles.listDetailsInput} 
                             placeholder = "내용"
+                            onChange = {this.props.listContent}
+                            onBlur = {this.props.changeCotent}
                             defaultValue = {content}                            
-                            />                            
-                            <IconButton style = {{padding : "0px"}}>
-                                <CreateIcon style = {{ fontSize: "18px" }}/>
-                            </IconButton>                                     
+                        />                            
+                        <IconButton style = {{padding : "0px"}} 
+                            onClick = {this.props.deleteList}
+                        >
+                            <CloseIcon style = {styles}/>
+                        </IconButton>                                     
                     </div>
                 ))
             }
@@ -48,6 +61,10 @@ export default class BoardList extends React.Component{
 
 
 const styles = {
+iconStyle : {
+    fontSize: "18px", 
+    paddingRight: "5px" 
+},
 titleInput : {
     background: "none",
     border: "none",
