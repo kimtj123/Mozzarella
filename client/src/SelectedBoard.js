@@ -23,7 +23,11 @@ export default class Boards extends React.Component {
             {   
                 "title" : "Doing",
                 "boardList" : ["내용2-1","내용2-2","내용2-3"]
-            },        
+            },   
+            {   
+                "title" : "Done",
+                "boardList" : ["내용3-1","내용3-2","내용3-3"]
+            },      
         ],
         add : ""
     }
@@ -48,11 +52,14 @@ addCard(){
     )
     this.setState({cardList : currentList}) 
 }
-removeCard(index){    
-    console.log("해당인덱스 :: ", index)
-    const cardList = this.state.cardList.slice();   
-    cardList.splice(cardList.indexOf(index), 1);
-    this.setState({cardList : cardList})
+removeCard(e){        
+
+    console.log("e.currentTarget :: ", e.currentTarget.title)
+    console.log("e.detail :: ", e.detail)
+    console.log("e.target :: ", e.target)
+    
+    const products = this.state.cardList.filter(prod => prod.title !== e.currentTarget.title)
+    this.setState({cardList : products})
 }
 render(){     
     console.log(this.state.cardList)
@@ -65,7 +72,7 @@ render(){
             <div style = {{display: "inline-flex"}}>         
             {
                 this.state.cardList.map((val,index)=> 
-                <div className = "addListWrapper" style = {styles.addListWrapper} key = {"addListWrapper"+index}>
+                <div className = "addListWrapper" style = {styles.addListWrapper} key = {val.title} title = {val.title}>
                     <form>                                          
                         <BoardList 
                             focus = {this.state.focus}

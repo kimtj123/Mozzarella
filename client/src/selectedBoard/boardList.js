@@ -22,7 +22,7 @@ export default class BoardList extends React.Component{
                     defaultValue = {this.props.title}
                 >
                 </input>
-                <div className = "list-add-control" onClick = {this.props.removeCard}>
+                <div className = "list-add-control" onClick = {this.props.removeCard} title = {this.props.title}>
                     <DeleteIcon />
                 </div>         
             </div>    
