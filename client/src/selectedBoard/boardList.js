@@ -11,7 +11,7 @@ export default class BoardList extends React.Component{
         console.log(props)
     }
     render(){
-    let boardList = this.props.boardList
+    let list = this.props.list
 
     return (
         <div>
@@ -31,28 +31,42 @@ export default class BoardList extends React.Component{
                 </div>         
             </div>    
             {
-                boardList.map((content,index) => 
-                (
-                    <div className = "listCardDetailWrapper" 
-                    style = {styles.listCardDetailWrapper} 
-                    key = {index}
-                    title = {this.props.title}
-                    
-                    >
-                        <input className = "listDetailsInput"
-                            style = {styles.listDetailsInput} 
+                list.map((content,index) => {
+                   return (
+                        <div className = "listCardDetailWrapper" 
+                        style = {styles.listCardDetailWrapper} 
+                        key = {index}
+                        title = {this.props.title}                    
+                        >
+                        {
+                             this.props.clickedList !== content ?
+                             <span // 클릭 시 display none
+                                title = {content}
+                                style = {styles.listDetails}
+                                onClick = {this.props.getListName}
+                            >
+                                {content}
+                            </span>       :
+                            <textarea className = "listDetailsInput"
+                            style = {styles.listDetailsTextArea } 
+                            rows = "3" 
+                            cols = "50"
                             placeholder = "내용"
                             onChange = {this.props.listContent}
                             onBlur = {this.props.changeCotent}
+                            name = {content}
                             defaultValue = {content}                            
-                        />                            
-                        <IconButton style = {{padding : "0px"}} 
-                            onClick = {this.props.deleteList}
-                        >
-                            <CloseIcon style = {styles}/>
-                        </IconButton>                                     
-                    </div>
-                ))
+                            />                           
+                        }
+                            <IconButton style = {{padding : "0px"}} 
+                                onClick = {this.props.deleteList}
+                                title = {this.props.title + index}
+                            >
+                                <CloseIcon style = {styles}/>
+                            </IconButton>                                     
+                        </div>
+                    )}
+                )
             }
         </div>
         )    
@@ -81,7 +95,6 @@ listNameInput: {
     lineJeight: "20px",
     width: "calc(100% - 16px)",
     marginBottom: "5px"
-
 },
 listCardDetailWrapper : {    
     background : "white",
@@ -89,9 +102,9 @@ listCardDetailWrapper : {
     boxShadow: "0 1px 0 rgba(9,30,66,.25)",    
     display : "inline-flex",
     marginBottom: "10px",
-    paddingRight: "3px"
+    width: "100%"
 },
-listDetailsInput: {
+listDetails: {
     background: "white",
     border: "none",    
     boxShadow: "none",
@@ -100,6 +113,18 @@ listDetailsInput: {
     fontWeight: 600,
     width: "calc(100% - 16px)",
     height: "20px",
-    outline:"none" 
+    outline:"none" ,
+},
+listDetailsTextArea: {
+    background: "white",
+    border: "none",    
+    boxShadow: "none",
+    borderRadius: "3px",
+    padding: "4px 72px 4px 8px",
+    fontWeight: 600,
+    width: "calc(100% - 16px)",
+    height: "60px",
+    outline:"none" ,
+    resize: "none",
 },
 }

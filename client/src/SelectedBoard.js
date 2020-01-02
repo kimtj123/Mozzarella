@@ -16,20 +16,24 @@ export default class Boards extends React.Component {
         cardList : 
         [
             {
+                "_id" : "23TplPdS",
                 "title" : "ToDo",
-                "boardList" : ["내용1","내용2","내용3"]
+                "list" : ["내용1","내용2","내용3"]
             },
             {   
+                "_id" : "46Juzcyx",
                 "title" : "Doing",
-                "boardList" : ["내용2-1","내용2-2","내용2-3"]
+                "list" : ["내용2-1","내용2-2","내용2-3"]
             },   
             {   
+                "_id" : "2WEKaVNO",
                 "title" : "Done",
-                "boardList" : ["내용3-1","내용3-2","내용3-3"]
+                "list" : ["내용3-1","내용3-2","내용3-3"]
             },      
         ],
         add : "",
-        listContent : ""
+        listContent : "",
+        clickedList : ""
     }
 
     this.addCard = this.addCard.bind(this);
@@ -38,11 +42,17 @@ export default class Boards extends React.Component {
     this.listContent = this.listContent.bind(this);
     this.openAddList = this.openAddList.bind(this);
     this.removeCard = this.removeCard.bind(this);
-    this.deleteList = this.deleteList .bind(this);
+    this.deleteList = this.deleteList.bind(this);
+    this.getListName = this.getListName.bind(this);
 }
 
-openAddList(event){
-    let nameVal = event.target.getAttribute('name')    
+getListName(e){
+console.log(e.target.title)
+this.setState( {clickedList : e.target.title})
+    
+}
+openAddList(e){
+    let nameVal = e.target.getAttribute('name')    
     this.setState({ add : nameVal })               
     console.log("콘텐츠 추가 :: ", this.state.add)
 }
@@ -53,7 +63,7 @@ addCard(e){
     currentList.push(
         {   
             "title" : "",
-            "boardList" : []
+            "list" : []
         }
     )
     this.setState({
@@ -69,7 +79,7 @@ addList(e){
         newCardList.forEach((val,index) => {
             if(e.currentTarget.title === val.title)
             {
-                val.boardList.push(this.state.listContent)
+                val.list.push(this.state.listContent)
             }
         })
         this.setState({
@@ -87,43 +97,45 @@ changeCotent(e){
         {
             val.title = e.target.value;
         }
-        else if(val.boardList.includes(e.target.defaultValue)) // 카드 리스트 내용 수정
+        else if(val.list.includes(e.target.defaultValue)) // 카드 리스트 내용 수정
         {                        
-            let indexWillChange = val.boardList.indexOf(e.target.defaultValue);
-            val.boardList[indexWillChange] = e.target.value;
-            this.setState({
-                listContent : ""
-            })
-            console.log(this.state.listContent)
+            let indexWillChange = val.list.indexOf(e.target.defaultValue);
+            val.list[indexWillChange] = e.target.value;  
         }
     });
-    this.setState({cardList: newCardList})
+    this.setState({
+        cardList: newCardList,        
+    })
 }
 deleteList(e){
-    // let newCardList = Object.assign([], this.state.cardList);
-    let newCardList = JSON.parse(JSON.stringify(this.state.cardList))
-    let parentIndex = e.currentTarget.parentNode;
-    console.log(parentIndex)
-    // newCardList.map((val,index)=>{
-    //     if(val.boardList.indexOf(parentIndex) !== -1)
-    //     {
-    //         val.boardList.splice(val.boardList.indexOf(parentIndex),1)
-    //     }
-    // })
-    console.log(newCardList)
-    this.setState({cardList: newCardList})
- 
+    let newCardList = Object.assign([], this.state.cardList);
+    let listName = e.currentTarget.parentNode.children[0].innerText
+    console.log(e.currentTarget.parentNode.children[0])
+
+    for(let i = 0; i < newCardList.length; i++)
+    {        
+        for(let j = 0; j < newCardList[i]["list"].length; j++)
+        {            
+            if(newCardList[i]["list"][j] === listName)
+            {
+                newCardList[i]["list"].splice(j,1);
+            }
+        }
+    }
+    this.setState({cardList : newCardList})
+    
 }
 listContent(e){        
     let content = e.target.value      
     this.setState({listContent : content});
 }
 removeCard(e){        
+    console.log("REMOVE!!")
     const newCard = this.state.cardList.filter(card => card.title !== e.currentTarget.title)
     this.setState({cardList : newCard})
 }
 render(){     
-    console.log(this.state.cardList)
+    console.log(this.state.clickedList)
     return (
         <div  style = {{width : "100%", height : "99vh"}}>
             <BoardHeader />        
@@ -135,19 +147,24 @@ render(){
                 this.state.cardList.map((val,index)=> 
                 <div className = "addListWrapper" 
                     style = {styles.addListWrapper} 
-                    key = {val.title} 
+                    key = {val.title+index} 
                     title = {val.title}
                 >
                     <form>                                          
                         <BoardList 
+                            id = {val.id}
+                            list = {val.list}
+                            title = {val.title}           
+                            
+                            clickedList = {this.state.clickedList}
+                            
                             addList = {this.addList}
-                            boardList = {val.boardList}
                             changeCotent = {this.changeCotent}
                             deleteList = {this.deleteList}
                             focus = {this.state.focus}
                             listContent = {this.listContent}
-                            removeCard = {this.removeCard}                            
-                            title = {val.title}                            
+                            removeCard = {this.removeCard}    
+                            getListName = {this.getListName}                                                           
                         /> 
                         <AddlistArea
                             openAddList = {this.openAddList} 

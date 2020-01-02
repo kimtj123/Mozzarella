@@ -11,7 +11,6 @@ export default class addBoard extends React.Component {
     }
   }
 render(){    
-  console.log("addBoards :: ",this.props.createBoard)
   return (
     // 전체화면을 덮는 div
     <div className ="coverWholeDisplay" 
@@ -26,7 +25,11 @@ render(){
         <form>
           <div className = "formContatiner" style = {styles.formContatiner}>            
             <div className = "inputTitle" style = {styles.inputTitle}>
-              <input style = {styles.inputStyle} placeholder = "보드명을 입력해주세요."/>
+              <input 
+                onChange = {this.props.getBoardTitle}
+                style = {styles.inputStyle} 
+                placeholder = "보드명을 입력해주세요."
+                />
               <Button style = {styles.closeButton} onClick = {this.props.closeModal}>
                 <CloseIcon />
               </Button>
@@ -34,8 +37,8 @@ render(){
               <ul className = "selectTheme" style = {styles.selectTheme}>
                 {
                   styles.gridItems.map((val, index) => 
-                  <li className = {`gridItem`} style = {styles.gridItem}>
-                    <button style = {val}></button>
+                  <li className = {`gridItem`} style = {styles.gridItem} >
+                    <button type = "button" style = {val} onClick = {this.props.getBoardColor}></button>
                   </li>            
                   )
                 }                
@@ -92,7 +95,7 @@ const styles = {
     zIndex: 20,
   },
   inputTitle : {
-    backgroundColor: "#fff",
+    // backgroundColor: "#fff",
     backgroundColor: "skyblue",
     borderRadius: "3px",
     boxSizing: "border-box",
@@ -106,8 +109,6 @@ const styles = {
   inputStyle : {
     width : "80%",
     height : "22px",
-    width: "80%",
-    height: "22px",
     boxShadow: "none",
     background: "none",
     border: "none"
@@ -154,7 +155,7 @@ const styles = {
       display: "list-item",      
     },
     {
-      backgroundColor : "#F3F781",
+      backgroundColor : "#FFEB5A",
       border: "none",
       borderRadius: "3px",
       height: "28px",

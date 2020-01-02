@@ -2,7 +2,10 @@ import React from 'react';
 
 import AddBoard from './boards/addBoard';
 import BoardHeader from './common/BoardHeader';
-import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Link } from "react-router-dom";
+import DeleteIcon from '@material-ui/icons/Delete';
+import IconButton from '@material-ui/core/IconButton';
+
 
 
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
@@ -11,43 +14,79 @@ import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 export default class Boards extends React.Component {  
   constructor(props){
     super(props)
-    this.state = {      
-      recentBoards : ['recent1','recent2'],
-      allBoards : ['test1','test2','test3','test4','test5', 'test6', 'test7','addBoard'],
+    this.state = {           
+      allBoards : [
+        {
+          id : "#1",
+          title : 'test1',
+          color : "rgb(254, 46, 46)"
+        },
+        {
+          id : "#2",
+          title : 'test2',
+          color : "#FFEB5A"
+        },
+        {
+          id : "#3",
+          title : 'test3',
+          color : "rgb(172, 250, 88)"
+        },
+        {
+          id : "#4",
+          title : 'test1',
+          color : "rgb(100, 46, 254)"
+        },
+        
+        'addBoard'
+      ],
       hoverTarget : '',
-      modal : false      
+      modal : false ,
+      newBoardTitle : '',
+      newBoardColor : '',
     }
-    this.targetList = this.targetList.bind(this);
-    this.stateChange  = this.stateChange.bind(this);
-
+    this.getBoardTitle = this.getBoardTitle.bind(this);
+    this.getBoardColor = this.getBoardColor.bind(this);
+    this.deleteBoard = this.deleteBoard.bind(this);
+    // 생성창 열고 닫기
     this.openModal =  this.openModal.bind(this);
     this.closeModal =  this.closeModal.bind(this);
-
+    // 생성관련
     this.multipleElements = this.multipleElements.bind(this);
     this.separateElement = this.separateElement.bind(this);
     this.createBoard = this.createBoard.bind(this);
 
   }
-  
-targetList(event){
-  let targetName =  event.target.className
-  this.stateChange(targetName);
-
-}  
-stateChange(targetName) {
-  this.setState = ({ 
-    hoverTarget : targetName
+deleteBoard(e){
+  let newBoard = this.state.allBoards.slice();
+  let deleteTarget = e.currentTarget.parentNode.className;
+  newBoard = newBoard.filter((board,index) => {
+    return board.id !== deleteTarget    
+  })  
+  this.setState({
+    allBoards : newBoard
   })
 }
+getBoardTitle(e){
+  let boardTitle =  e.target.value
+  this.setState({newBoardTitle : boardTitle})
+}
+getBoardColor(e){
+  let boardColor = e.target.style.backgroundColor
+  this.setState({newBoardColor : boardColor})
+}
+
 openModal(){
   this.setState({modal : true})
 } 
 closeModal(){
   this.setState({modal : false})
 } 
+
+
 multipleElements(Boards) {
   // 여기 참고 https://bit.ly/2Z6LhaP
   let elements = [];
+
   for(let i = 0; i < Boards.length; i++) 
   {
     if(Boards[i] !== 'addBoard')
@@ -55,18 +94,56 @@ multipleElements(Boards) {
       elements.push(
       <Link style = {styles.aTag} to = "/SelectedBoard">
         <li
-          className = {Boards[i]}   
+          className = {Boards[i].id}   
           onMouseOver={(event) => { 
-            console.log('list :: ', this.state)
             this.setState({hoverTarget : event.target.className}) 
           }
           } 
           onMouseOut={(event) => { this.setState({hoverTarget : ""}) }}
-          style = {this.state.hoverTarget !== Boards[i] ? styles.liStyle : styles.hoverLiStyle} 
+          style = {
+            this.state.hoverTarget === Boards[i].id ? 
+            {
+              borderRadius: "5px",
+              background: Boards[i].color,
+              display : "table",
+              height : "12vh",
+              opacity : "0.7",
+              position : "relative",
+              width: "20vw",    
+              margin: "0 8px 8px 0",
+              maxWidth : "250px",
+              maxHeight : "150px",
+              minHeight : "90px"
+            } : 
+            {
+              borderRadius: "5px",
+              background: Boards[i].color,
+              display : "table",
+              height: "12vh",
+              position : "relative",
+              width: "20vw",    
+              margin: "0 8px 8px 0",
+              maxWidth : "250px",
+              maxHeight : "150px",
+              minHeight : "90px"
+            }            
+          } 
         >            
-          <p className = {Boards[i]} style = {styles.boardTitle}>
-            {Boards[i]}
-          </p>          
+          <p className = {Boards[i].title} style = {styles.boardTitle}>
+            {Boards[i].title}
+          </p>         
+          <IconButton
+          style = {{
+            bottom : 0,     
+            right: 0,
+            background: "none",
+            position : "absolute"
+          }}
+          onClick = {this.deleteBoard}
+          > 
+            <DeleteIcon 
+            />
+          </IconButton> 
         </li>   
       </Link>      
       )
@@ -79,14 +156,13 @@ multipleElements(Boards) {
           onMouseOver=
           {
             (event) => { 
-              console.log('list :: ', this.state)
               this.setState({hoverTarget : event.target.className}) 
             }
           } 
           onMouseOut={(event) => { this.setState({hoverTarget : ""}) }}
           style = {this.state.hoverTarget !== Boards[i] ? styles.liStyle : styles.hoverLiStyle} 
           onClick = {this.openModal}
-        >
+        > 
           <div className = {Boards[i]} style = {styles.addBoardWrapper}> 
               <AddCircleRoundedIcon style = {styles.addBoard}/>
           </div>
@@ -97,50 +173,47 @@ multipleElements(Boards) {
   return elements;
 }
 separateElement (Boards) { 
-  var separateElements = [];
-  var multiElements = this.multipleElements(Boards);
+  let separateElements = [];
+  let multiElements = this.multipleElements(Boards);
  
-  for(var i = 0; i < multiElements.length; i+=4) {
-        var oneRow = [];
-        oneRow.push(multiElements.slice(i, i+4).map(title => {
-        return (
-          <div className ="item" > {title} </div>
-          )
-        }
-      ))
+  for(let i = 0; i < multiElements.length; i+=4) {
+  let oneRow = [];
+  oneRow.push(multiElements.slice(i, i+4).map(title => {
+    return (
+      <div className ="item"> {title} </div>
+      )
+    }
+  ))
 
-  separateElements.push(oneRow.map(itm => {return <div style = {{display: "inline-flex"}}>{itm}</div>}))
+  separateElements.push(oneRow.map(itm => {
+    return <div style = {{display: "inline-flex"}}>
+            {itm}
+          </div>
+      }
+    ))
   }
   return separateElements;
  }    
 createBoard(){
   let currentBoards = this.state.allBoards.slice();
-  
-  // 맨 뒤에 빈 값을 추가(슬롯 확장))
-  currentBoards.push("") 
-  // addBoard를 뒤로 한칸 밀어놓는다.
+  let newBoards =  {
+    id : "#" + this.state.allBoards.length,
+    title : this.state.newBoardTitle,
+    color : this.state.newBoardColor
+  }
+  // 맨 뒤에 빈 값을 추가(슬롯 확장)) 후, addBoard를 뒤로 한칸 밀어놓는다.
+  currentBoards.push(newBoards)     
   currentBoards[currentBoards.length-1] = currentBoards[currentBoards.length-2];
-  currentBoards[currentBoards.length-2] = "test" + (currentBoards.length-1);
+  
+  currentBoards[currentBoards.length-2] = newBoards;
 
   this.separateElement(currentBoards);
   this.setState({allBoards : currentBoards});
 }
 render(){  
-  console.log(this.state)
-
   return (
       <div>
         <BoardHeader />
-        <div style = {styles.listsWrapper}>
-          <div>
-            <h3>최근 조회</h3>
-          </div>
-          <ul style = {styles.ulStyle}>
-            {          
-                this.separateElement(this.state.recentBoards)
-            }                           
-          </ul>
-        </div>
         <div style = {styles.listsWrapper}>
           <h3>전체 보드</h3>
             <ul style = {styles.ulStyle}>            
@@ -149,7 +222,13 @@ render(){
             }           
             </ul>
         </div>
-        <AddBoard modalStatus = {this.state.modal} createBoard = {this.createBoard} closeModal = {this.closeModal}/>
+        <AddBoard           
+          modalStatus = {this.state.modal} 
+          createBoard = {this.createBoard} 
+          closeModal = {this.closeModal}
+          getBoardTitle = {this.getBoardTitle}
+          getBoardColor = {this.getBoardColor}
+        />
     </div>
     );
   }
