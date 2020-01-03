@@ -42,7 +42,7 @@ export default class Boards extends React.Component {
       hoverTarget : '',
       modal : false ,
       newBoardTitle : '',
-      newBoardColor : '',
+      newBoardColor : 'white',
     }
     this.getBoardTitle = this.getBoardTitle.bind(this);
     this.getBoardColor = this.getBoardColor.bind(this);
@@ -65,6 +65,7 @@ deleteBoard(e){
   this.setState({
     allBoards : newBoard
   })
+  // e.preventDefault()
 }
 getBoardTitle(e){
   let boardTitle =  e.target.value
@@ -91,61 +92,70 @@ multipleElements(Boards) {
   {
     if(Boards[i] !== 'addBoard')
     {
+      let onMouseStyle = {
+        borderRadius: "5px",
+        background: Boards[i].color,
+        display : "table",
+        height : "12vh",
+        opacity : "0.7",
+        position : "relative",
+        width: "20vw",    
+        margin: "0 8px 8px 0",
+        maxWidth : "250px",
+        maxHeight : "150px",
+        minHeight : "90px"
+      }
+      let outMouseStyle = {
+        borderRadius: "5px",
+        background: Boards[i].color,
+        display : "table",
+        height: "12vh",
+        position : "relative",
+        width: "20vw",    
+        margin: "0 8px 8px 0",
+        maxWidth : "250px",
+        maxHeight : "150px",
+        minHeight : "90px"
+      }    
       elements.push(
-      <Link style = {styles.aTag} to = "/SelectedBoard">
-        <li
-          className = {Boards[i].id}   
-          onMouseOver={(event) => { 
-            this.setState({hoverTarget : event.target.className}) 
-          }
-          } 
-          onMouseOut={(event) => { this.setState({hoverTarget : ""}) }}
-          style = {
-            this.state.hoverTarget === Boards[i].id ? 
-            {
-              borderRadius: "5px",
-              background: Boards[i].color,
-              display : "table",
-              height : "12vh",
-              opacity : "0.7",
-              position : "relative",
-              width: "20vw",    
-              margin: "0 8px 8px 0",
-              maxWidth : "250px",
-              maxHeight : "150px",
-              minHeight : "90px"
-            } : 
-            {
-              borderRadius: "5px",
-              background: Boards[i].color,
-              display : "table",
-              height: "12vh",
-              position : "relative",
-              width: "20vw",    
-              margin: "0 8px 8px 0",
-              maxWidth : "250px",
-              maxHeight : "150px",
-              minHeight : "90px"
-            }            
-          } 
-        >            
-          <p className = {Boards[i].title} style = {styles.boardTitle}>
-            {Boards[i].title}
-          </p>         
+          <li
+            className = {Boards[i].id}   
+            onMouseOver={(event) => { 
+              this.setState({hoverTarget : event.target.className}) 
+            }
+            } 
+            onMouseOut={(event) => { this.setState({hoverTarget : ""}) }}
+            style = {
+              this.state.hoverTarget === Boards[i].id ? 
+              onMouseStyle : 
+              outMouseStyle     
+            }             
+          >            
+          <Link style = {styles.aTag} to = {"/SelectedBoard"}>        
+            <div style = {{
+              bottom: 0,
+              left: 0,
+              position: "absolute",
+              right: 0,
+              top: 0,
+            }}>
+              <p className = {Boards[i].title} style = {styles.boardTitle}>
+                {Boards[i].title}
+              </p>                       
+            </div>            
+          </Link>
           <IconButton
-          style = {{
-            bottom : 0,     
-            right: 0,
-            background: "none",
-            position : "absolute"
-          }}
-          onClick = {this.deleteBoard}
+            style = {{
+              bottom : 0,     
+              right: 0,
+              background: "none",
+              position : "absolute"
+            }}
+            onClick = {this.deleteBoard}                
           > 
-            <DeleteIcon 
-            />
+            <DeleteIcon />
           </IconButton> 
         </li>   
-      </Link>      
       )
     }
     else if(Boards[i] === 'addBoard')
@@ -166,7 +176,7 @@ multipleElements(Boards) {
           <div className = {Boards[i]} style = {styles.addBoardWrapper}> 
               <AddCircleRoundedIcon style = {styles.addBoard}/>
           </div>
-        </li>       
+        </li>      
       )
     }
   }
@@ -216,18 +226,19 @@ render(){
         <BoardHeader />
         <div style = {styles.listsWrapper}>
           <h3>전체 보드</h3>
-            <ul style = {styles.ulStyle}>            
+            <ul style = {styles.ulStyle} >            
             {          
                 this.separateElement(this.state.allBoards)
             }           
             </ul>
         </div>
         <AddBoard           
-          modalStatus = {this.state.modal} 
           createBoard = {this.createBoard} 
           closeModal = {this.closeModal}
           getBoardTitle = {this.getBoardTitle}
           getBoardColor = {this.getBoardColor}
+          modalStatus = {this.state.modal}       
+          newBoardColor = {this.state.newBoardColor}        
         />
     </div>
     );

@@ -7,10 +7,21 @@ export default class addBoard extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-      themeColor :''
+      themeColor : this.props.newBoardColor
     }
   }
-render(){    
+render(){      
+  let inputTitle = {
+    backgroundColor: this.props.newBoardColor || "skyblue" ,
+    borderRadius: "3px",
+    boxSizing: "border-box", 
+    display: "inline-flex",
+    height: "96px",
+    margin: 0,
+    padding: "10px 10px 10px 16px",
+    position: "relative",
+    width: "296px",
+  }
   return (
     // 전체화면을 덮는 div
     <div className ="coverWholeDisplay" 
@@ -24,7 +35,7 @@ render(){
       <div className = "formWrapper" style = {styles.formWrapper}>      
         <form>
           <div className = "formContatiner" style = {styles.formContatiner}>            
-            <div className = "inputTitle" style = {styles.inputTitle}>
+            <div className = "inputTitle" style = {inputTitle}>
               <input 
                 onChange = {this.props.getBoardTitle}
                 style = {styles.inputStyle} 
@@ -56,6 +67,7 @@ render(){
   }
 }
 
+// let theme = this.props.newBoardColor ? this.props.newBoardColor : "white"
 
 const styles = { 
   createBoardWrapper : {
@@ -93,19 +105,7 @@ const styles = {
     justifyContent: "center",    
     position: "fixed",        
     zIndex: 20,
-  },
-  inputTitle : {
-    // backgroundColor: "#fff",
-    backgroundColor: "skyblue",
-    borderRadius: "3px",
-    boxSizing: "border-box",
-    display: "inline-flex",
-    height: "96px",
-    margin: 0,
-    padding: "10px 10px 10px 16px",
-    position: "relative",
-    width: "296px",
-  },
+  },  
   inputStyle : {
     width : "80%",
     height : "22px",
