@@ -1,43 +1,89 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 
-export default function Login(props) {  
-  return (
-    <div style = {styles.wrapper}>
-        <div>
-            <img style = {styles.image} src = {require('./common/Mozzarello.png')}/>          
-        </div>
-        <div style = {styles.backGround}>
-            <div style = {styles.titleWrapper}>
-                <p style = {styles.titleText}> 로그인</p>
+
+
+export default class Login extends React.Component {  
+    constructor(props)
+    {
+        super(props)
+        this.state = {           
+            email : '',
+            password : ''
+        }
+        this.getEmail = this.getEmail.bind(this);
+        this.getPassword = this.getPassword.bind(this);
+        this.submitLogin = this.submitLogin.bind(this);
+    }
+
+    getEmail(e){
+        this.setState({
+            email : e.target.value
+        })
+    }
+    getPassword(e){
+        this.setState({        
+            password : e.target.value        
+        })
+    }
+    submitLogin()
+    {        
+        let URL = "http://localhost:4000/users/login"
+        console.log("state :: ", this.state)
+        let loginInfo = Object.assign({}, this.state)        
+
+        fetch(URL, {
+            method: 'POST',
+            body: JSON.stringify(loginInfo),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+        .then(res => {
+            console.log(res.body);
+            return res.json();
+        })
+        .then(res => console.log(res));
+    }
+    
+    render(){
+        return (
+            <div style = {styles.wrapper}>
+                <div>
+                    <img style = {styles.image} src = {require('./common/Mozzarello.png')}/>          
+                </div>
+                <div style = {styles.backGround}>
+                    <div style = {styles.titleWrapper}>
+                        <p style = {styles.titleText}> 로그인</p>
+                    </div>
+                    <div>
+                        <input onChange = {this.getEmail} style = {styles.input} placeholder = '이메일을 입력하세요'>
+                        </input>          
+                    </div>
+                    <div>
+                        <input onChange = {this.getPassword} style = {styles.input} placeholder = '비밀번호를 입력하세요'>
+                        </input>          
+                    </div>
+                    <Button onClick = {this.submitLogin} variant="contained" color="primary" style = {styles.button}>
+                        로그인
+                    </Button>          
+                    <div>or</div>
+                    <Button variant="contained" color="primary" style = {styles.googleButton}>
+                        구글 로그인
+                    </Button>
+                    <Button variant="contained" color="primary" style = {styles.facebookButton}>
+                        페이스북 로그인
+                    </Button>
+                    <hr style = {styles.hr}></hr>
+                    <div style = {{display: 'inline-flex'}}>
+                        <p style = {styles.findText}>아이디 찾기 </p>
+                        <p style = {styles.findText}>&nbsp;/&nbsp;</p>
+                        <p style = {styles.findText}>비밀번호 찾기</p>
+                    </div>
+                </div>       
             </div>
-            <div>
-                <input style = {styles.input} placeholder = '이메일을 입력하세요'>
-                </input>          
-            </div>
-            <div>
-                <input style = {styles.input} placeholder = '비밀번호를 입력하세요'>
-                </input>          
-            </div>
-            <Button variant="contained" color="primary" style = {styles.button}>
-                로그인
-            </Button>          
-            <div>or</div>
-            <Button variant="contained" color="primary" style = {styles.googleButton}>
-                구글 로그인
-            </Button>
-            <Button variant="contained" color="primary" style = {styles.facebookButton}>
-                페이스북 로그인
-            </Button>
-            <hr style = {styles.hr}></hr>
-            <div style = {{display: 'inline-flex'}}>
-                <p style = {styles.findText}>아이디 찾기 </p>
-                <p style = {styles.findText}>&nbsp;/&nbsp;</p>
-                <p style = {styles.findText}>비밀번호 찾기</p>
-            </div>
-        </div>       
-    </div>
-  );
+        );
+    }
 }
 
 
