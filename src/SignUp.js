@@ -44,30 +44,47 @@ export default class SignUp extends React.Component {
     submit()
     {
         let URL = "http://localhost:4000/users/singup"        
-        let loginInfo = Object.assign({}, this.state)        
-
-        if(loginInfo.password === loginInfo.pwdchk)
+        let singUpInfo = Object.assign({}, this.state)        
+        let status;
+        if(singUpInfo.password === singUpInfo.pwdchk)
         {
-            delete loginInfo.pwdchk
-            if(!loginInfo.pwdchk)
+            delete singUpInfo.pwdchk
+            if(!singUpInfo.pwdchk)
             {
                 fetch(URL, {
                     method: 'POST',
-                    body: JSON.stringify(loginInfo),
+                    body: JSON.stringify(singUpInfo),
                     headers: {
                         'Content-Type': 'application/json',
                     },
                 })
-                .then(res => {
-                    console.log(res.body);
+                .then(res => {                  
+                    status = res.status;                    
                     return res.json();
-                })
-                .then(res => console.log(res))           
+                }) 
+                .then(res => {
+                    if(status === 200)
+                    {
+                        alert("회원가입이 완료되었습니다.");
+                        this.props.history.push('/Login');                        
+                    }
+                    else
+                    {
+                        alert(res.key);
+                    }
+                });
             }
         }
         else
         {
-            alert("비밀번호가 일치하지 않습니다.")
+            if(this.state.email.length === 0)
+                alert("이메일을 입력해주세요.")
+            else if(this.state.username.length === 0)
+                alert("이름을 입력해주세요.")
+            else if(this.state.password.length === 0)
+                alert("비밀번호를 입력해주세요.")            
+            else if(this.state.password !== this.state.pwdchk)
+                alert("비밀번호가 일치하지 않습니다.")
         }
         
     }

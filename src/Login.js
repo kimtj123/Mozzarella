@@ -1,8 +1,6 @@
 import React from 'react';
 import Button from '@material-ui/core/Button';
 
-
-
 export default class Login extends React.Component {  
     constructor(props)
     {
@@ -27,11 +25,10 @@ export default class Login extends React.Component {
         })
     }
     submitLogin()
-    {        
-        let URL = "http://localhost:4000/users/login"
-        console.log("state :: ", this.state)
-        let loginInfo = Object.assign({}, this.state)        
-
+    {                
+        let URL = "http://localhost:4000/users/login";       
+        let loginInfo = Object.assign({}, this.state);
+        let status;        
         fetch(URL, {
             method: 'POST',
             body: JSON.stringify(loginInfo),
@@ -40,10 +37,28 @@ export default class Login extends React.Component {
             },
         })
         .then(res => {
-            console.log(res.body);
-            return res.json();
+            console.log(res);
+            status = res.status
+            if(status === 400)
+            {
+                alert("이메일 형식을 확인해주세요.")
+            }
+            else
+            {
+                return res.json();
+            }
         })
-        .then(res => console.log(res));
+        .then(res => {            
+            if(status === 403)
+            {
+                alert(res)
+            }
+            else
+            {
+                console.log(this.props)
+                this.props.history.push("/Boards");
+            }
+        });
     }
     
     render(){
@@ -61,7 +76,7 @@ export default class Login extends React.Component {
                         </input>          
                     </div>
                     <div>
-                        <input onChange = {this.getPassword} style = {styles.input} placeholder = '비밀번호를 입력하세요'>
+                        <input type = "password" onChange = {this.getPassword} style = {styles.input} placeholder = '비밀번호를 입력하세요'>
                         </input>          
                     </div>
                     <Button onClick = {this.submitLogin} variant="contained" color="primary" style = {styles.button}>

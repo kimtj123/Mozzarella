@@ -44,6 +44,7 @@ export default class Boards extends React.Component {
       newBoardTitle : '',
       newBoardColor : 'white',
     }
+    this.gotoMainPage = this.gotoMainPage.bind(this);
     this.getBoardTitle = this.getBoardTitle.bind(this);
     this.getBoardColor = this.getBoardColor.bind(this);
     this.deleteBoard = this.deleteBoard.bind(this);
@@ -220,10 +221,20 @@ createBoard(){
   this.separateElement(currentBoards);
   this.setState({allBoards : currentBoards});
 }
-render(){  
+
+gotoMainPage(){
+  this.props.history.push("/")
+}
+
+componentDidMount(){
+}
+
+
+
+render(){    
   return (
       <div>
-        <BoardHeader />
+        <BoardHeader gotoMainPage = {this.gotoMainPage}/>
         <div style = {styles.listsWrapper}>
           <h3>전체 보드</h3>
             <ul style = {styles.ulStyle} >            
