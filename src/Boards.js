@@ -5,9 +5,6 @@ import BoardHeader from './common/BoardHeader';
 import { BrowserRouter as Router, Link } from "react-router-dom";
 import DeleteIcon from '@material-ui/icons/Delete';
 import IconButton from '@material-ui/core/IconButton';
-
-
-
 import AddCircleRoundedIcon from '@material-ui/icons/AddCircleRounded';
 
 
@@ -15,35 +12,18 @@ export default class Boards extends React.Component {
   constructor(props){
     super(props)
     this.state = {           
-      allBoards : [
-        {
-          id : "#1",
-          title : 'test1',
-          color : "rgb(254, 46, 46)"
-        },
-        {
-          id : "#2",
-          title : 'test2',
-          color : "#FFEB5A"
-        },
-        {
-          id : "#3",
-          title : 'test3',
-          color : "rgb(172, 250, 88)"
-        },
-        {
-          id : "#4",
-          title : 'test1',
-          color : "rgb(100, 46, 254)"
-        },
-        
-        'addBoard'
-      ],
+      id : "",
+      email : "",
+      username : "",
+      allBoards : ['addBoard'],
       hoverTarget : '',
       modal : false ,
       newBoardTitle : '',
       newBoardColor : 'white',
     }
+
+
+
     this.gotoMainPage = this.gotoMainPage.bind(this);
     this.getBoardTitle = this.getBoardTitle.bind(this);
     this.getBoardColor = this.getBoardColor.bind(this);
@@ -55,6 +35,8 @@ export default class Boards extends React.Component {
     this.multipleElements = this.multipleElements.bind(this);
     this.separateElement = this.separateElement.bind(this);
     this.createBoard = this.createBoard.bind(this);
+    // 정보 불러오기
+    this.loadBoards = this.loadBoards .bind(this);
 
   }
 deleteBoard(e){
@@ -206,30 +188,85 @@ separateElement (Boards) {
   return separateElements;
  }    
 createBoard(){
-  let currentBoards = this.state.allBoards.slice();
-  let newBoards =  {
-    id : "#" + this.state.allBoards.length,
-    title : this.state.newBoardTitle,
-    color : this.state.newBoardColor
+  let URL = "http://localhost:4000/users/boards";       
+  let copyState = Object.assign({},this.state);
+  console.log(copyState)
+  let board = {
+    email : copyState.email,
+    title : copyState.newBoardTitle,
+    color : copyState.newBoardColor,
+    list : []    
   }
-  // 맨 뒤에 빈 값을 추가(슬롯 확장)) 후, addBoard를 뒤로 한칸 밀어놓는다.
-  currentBoards.push(newBoards)     
-  currentBoards[currentBoards.length-1] = currentBoards[currentBoards.length-2];
+  let status;  
+
+    fetch(URL, {
+      method: 'POST',
+      body: JSON.stringify(board),
+      headers: {
+        'Content-Type': 'application/json',          
+      },
+      credentials: 'include',
+    })
+    .then(res => {      
+        if(res.status === 201)    
+        {
+            console.log("보드생성");  
+        }
+        return res.json()
+    })
+    .then(res => console.log(res))
+    .catch(error => console.error(error))
+  // let currentBoards = this.state.allBoards.slice();
+  // // 맨 뒤에 빈 값을 추가(슬롯 확장)) 후, addBoard를 뒤로 한칸 밀어놓는다.
+  // currentBoards.push(newBoards)     
+  // currentBoards[currentBoards.length-1] = currentBoards[currentBoards.length-2];
   
-  currentBoards[currentBoards.length-2] = newBoards;
+  // currentBoards[currentBoards.length-2] = newBoards;
 
-  this.separateElement(currentBoards);
-  this.setState({allBoards : currentBoards});
+  // this.separateElement(currentBoards);
+  // this.setState({allBoards : currentBoards});
 }
-
+async loadBoards(){
+  let boardsURL = "http://localhost:4000/users/boards/"
+  let option = {
+    credentials: "include"
+  }
+  await fetch(boardsURL + this.state.email, option)
+  .then(res => res.json())
+  .then(res => {
+    let newBoards = res.boards
+    newBoards.push('addBoard')
+    this.setState({      
+      allBoards : newBoards
+    })
+  })
+  .catch(err => console.error(err))
+  await this.loadBoards()
+}
 gotoMainPage(){
   this.props.history.push("/")
 }
 
-componentDidMount(){
+async componentDidMount(){
+  let checkURL = "http://localhost:4000/users/check"
+  let option = {
+    credentials: "include"
+  }
+  await fetch(checkURL, option)
+  .then(res => res.json())
+  .then(res => {
+    this.setState({
+      id : res._id,
+      email : res.email,
+      username : res.username
+    })
+    console.log("res :: ", res)
+  })
+  .catch(err => console.error(err))
+
+  await this.loadBoards();
+
 }
-
-
 
 render(){    
   return (

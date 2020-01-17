@@ -29,15 +29,17 @@ export default class Login extends React.Component {
         let URL = "http://localhost:4000/users/login";       
         let loginInfo = Object.assign({}, this.state);
         let status;        
+        // console.log("로그인 정보",loginInfo)
         fetch(URL, {
             method: 'POST',
             body: JSON.stringify(loginInfo),
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json',                
             },
+            credentials: 'include',
+
         })
-        .then(res => {
-            console.log(res);
+        .then(res => { 
             status = res.status
             if(status === 400)
             {
@@ -48,14 +50,13 @@ export default class Login extends React.Component {
                 return res.json();
             }
         })
-        .then(res => {            
+        .then(res => {                  
             if(status === 403)
             {
                 alert(res)
             }
             else
             {
-                console.log(this.props)
                 this.props.history.push("/Boards");
             }
         });

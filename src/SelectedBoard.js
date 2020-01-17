@@ -16,17 +16,14 @@ export default class Boards extends React.Component {
         cardList : 
         [
             {
-                "_id" : "23TplPdS",
                 "title" : "ToDo",
                 "list" : ["내용1","내용2","내용3"]
             },
             {   
-                "_id" : "46Juzcyx",
                 "title" : "Doing",
                 "list" : ["내용2-1","내용2-2","내용2-3"]
             },   
             {   
-                "_id" : "2WEKaVNO",
                 "title" : "Done",
                 "list" : ["내용3-1","내용3-2","내용3-3"]
             },      
@@ -72,6 +69,7 @@ addCard(e){
     }) 
 }
 addList(e){
+    
     if(this.state.listContent !== "")
     {   
         let newCardList = Object.assign([], this.state.cardList);
