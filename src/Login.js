@@ -29,7 +29,7 @@ export default class Login extends React.Component {
         let URL = "http://localhost:4000/users/login";       
         let loginInfo = Object.assign({}, this.state);
         let status;        
-        // console.log("로그인 정보",loginInfo)
+        console.log("로그인 정보",loginInfo)
         fetch(URL, {
             method: 'POST',
             body: JSON.stringify(loginInfo),
@@ -66,7 +66,7 @@ export default class Login extends React.Component {
         return (
             <div style = {styles.wrapper}>
                 <div>
-                    <img style = {styles.image} src = {require('./common/Mozzarello.png')}/>          
+                    <img style = {styles.image} src = {require('./common/Mozzarello.png')} alt = "Mozzallo logo"/>          
                 </div>
                 <div style = {styles.backGround}>
                     <div style = {styles.titleWrapper}>
@@ -80,7 +80,12 @@ export default class Login extends React.Component {
                         <input type = "password" onChange = {this.getPassword} style = {styles.input} placeholder = '비밀번호를 입력하세요'>
                         </input>          
                     </div>
-                    <Button onClick = {this.submitLogin} variant="contained" color="primary" style = {styles.button}>
+                    <Button 
+                        onClick = {this.submitLogin} 
+                        variant="contained" 
+                        color="primary" 
+                        style = {styles.button}
+                        >
                         로그인
                     </Button>          
                     <div>or</div>

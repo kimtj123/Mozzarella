@@ -8,9 +8,13 @@ export default class BoardList extends React.Component{
     constructor(props)
     {
         super(props)
-        console.log(props)
+        this.state = {
+            id : this.props.id,
+            list : this.props.list
+        }   
     }
     render(){
+    console.log(this.props)
     let list = this.props.list
 
     return (
@@ -20,18 +24,19 @@ export default class BoardList extends React.Component{
                     style = {styles.listNameInput} 
                     placeholder = "제목"                                                               
                     defaultValue = {this.props.title}
-                    onBlur = {this.props.changeCotent}
+                    onBlur = {this.props.changeTitle}
                 >
                 </input>
                 <div className = "list-add-control" 
-                    onClick = {this.props.removeCard} 
+                    onClick = {this.props.deleteCard} 
                     title = {this.props.title}
                 >
                     <DeleteIcon />
                 </div>         
             </div>    
             {
-                list.map((content,index) => {
+                list.map((val,index) => {
+                    console.log("cardList :: ", val)
                    return (
                         <div className = "listCardDetailWrapper" 
                         style = {styles.listCardDetailWrapper} 
@@ -39,23 +44,29 @@ export default class BoardList extends React.Component{
                         title = {this.props.title}                    
                         >
                         {
-                             this.props.clickedList !== content ?
+                             this.props.clickedList !== val.id ?
                              <span // 클릭 시 display none
-                                title = {content}
+                                id = {val.id}
                                 style = {styles.listDetails}
                                 onClick = {this.props.getListName}
                             >
-                                {content}
+                                {val.content}
                             </span>       :
                             <textarea className = "listDetailsInput"
+                            autoFocus="autoFocus"
+                            onFocus={function(e) {
+                                var val = e.target.value;
+                                e.target.value = '';
+                                e.target.value = val;
+                              }}
                             style = {styles.listDetailsTextArea } 
                             rows = "3" 
                             cols = "50"
                             placeholder = "내용"
                             onChange = {this.props.listContent}
-                            onBlur = {this.props.changeCotent}
-                            name = {content}
-                            defaultValue = {content}                            
+                            onBlur = {this.props.changeContent, this.props.getListName}
+                            name = {val.content}
+                            defaultValue = {val.content}                            
                             />                           
                         }
                             <IconButton style = {{padding : "0px"}} 

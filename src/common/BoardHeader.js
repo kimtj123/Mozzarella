@@ -57,7 +57,7 @@ export default function BoardHeader(props) {
           <Button onClick = {logout} edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
             로그아웃
           </Button>             
-          <p>환영합니다. 김태중님</p>
+          <p>{"환영합니다. " + props.username + " 님"}</p>
         </Toolbar>
       </AppBar>
     </div>

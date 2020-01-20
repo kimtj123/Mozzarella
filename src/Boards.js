@@ -12,7 +12,7 @@ export default class Boards extends React.Component {
   constructor(props){
     super(props)
     this.state = {           
-      id : "",
+      user_id : "",
       email : "",
       username : "",
       allBoards : ['addBoard'],
@@ -21,8 +21,6 @@ export default class Boards extends React.Component {
       newBoardTitle : '',
       newBoardColor : 'white',
     }
-
-
 
     this.gotoMainPage = this.gotoMainPage.bind(this);
     this.getBoardTitle = this.getBoardTitle.bind(this);
@@ -36,19 +34,28 @@ export default class Boards extends React.Component {
     this.separateElement = this.separateElement.bind(this);
     this.createBoard = this.createBoard.bind(this);
     // 정보 불러오기
-    this.loadBoards = this.loadBoards .bind(this);
+    this.loadBoards = this.loadBoards.bind(this);
 
   }
-deleteBoard(e){
-  let newBoard = this.state.allBoards.slice();
+async deleteBoard(e){
+  // let newBoard = this.state.allBoards.slice();
   let deleteTarget = e.currentTarget.parentNode.className;
-  newBoard = newBoard.filter((board,index) => {
-    return board.id !== deleteTarget    
-  })  
-  this.setState({
-    allBoards : newBoard
-  })
-  // e.preventDefault()
+  console.log(deleteTarget)
+  let URL = `http://localhost:4000/users/deleteboard/${deleteTarget}`
+  console.log("deleteURL :: ", URL)
+  await fetch(URL, { 
+    method: 'delete',
+   })
+  .then(res => res.text()) // json 형식이 아닌 text 형식으로 해야 json 오류가 나지 않는다.
+  .then(res => console.log(res));
+
+  await this.loadBoards();
+  // // newBoard = newBoard.filter((board,index) => {
+  //   return board.id !== deleteTarget    
+  // })  
+  // this.setState({
+  //   allBoards : newBoard
+  // })
 }
 getBoardTitle(e){
   let boardTitle =  e.target.value
@@ -66,11 +73,9 @@ closeModal(){
   this.setState({modal : false})
 } 
 
-
 multipleElements(Boards) {
   // 여기 참고 https://bit.ly/2Z6LhaP
   let elements = [];
-
   for(let i = 0; i < Boards.length; i++) 
   {
     if(Boards[i] !== 'addBoard')
@@ -102,31 +107,37 @@ multipleElements(Boards) {
       }    
       elements.push(
           <li
-            className = {Boards[i].id}   
+            className = {Boards[i]._id}   
             onMouseOver={(event) => { 
-              this.setState({hoverTarget : event.target.className}) 
+              this.setState({hoverTarget : event.currentTarget.className}) 
             }
             } 
             onMouseOut={(event) => { this.setState({hoverTarget : ""}) }}
             style = {
-              this.state.hoverTarget === Boards[i].id ? 
+              this.state.hoverTarget === Boards[i]._id ? 
               onMouseStyle : 
               outMouseStyle     
             }             
           >            
-          <Link style = {styles.aTag} to = {"/SelectedBoard"}>        
-            <div style = {{
-              bottom: 0,
-              left: 0,
-              position: "absolute",
-              right: 0,
-              top: 0,
-            }}>
-              <p className = {Boards[i].title} style = {styles.boardTitle}>
-                {Boards[i].title}
-              </p>                       
-            </div>            
-          </Link>
+            <Link style = {styles.aTag} 
+            // 새로고침하면 props가 저장이 안된다. 고로 localstorage에 저장해 값을 넘기도록 하자
+            // 처음에 Boards[i]._id로 넘겨주었지만 마지막 값만이 리턴된다. var도 아닌데 왜그러는지 모르것네
+              onClick = {(e) => localStorage.setItem("boardID",e.currentTarget.parentNode.className)}
+              to = {{
+                pathname: "/SelectedBoard",
+                }} >        
+              <div style = {{
+                bottom: 0,
+                left: 0,
+                position: "absolute",
+                right: 0,
+                top: 0,
+              }}>
+                  <p style = {styles.boardTitle}>
+                    {Boards[i].title}
+                  </p>                       
+                </div>            
+              </Link>
           <IconButton
             style = {{
               bottom : 0,     
@@ -187,19 +198,17 @@ separateElement (Boards) {
   }
   return separateElements;
  }    
-createBoard(){
+async createBoard(){  
   let URL = "http://localhost:4000/users/boards";       
   let copyState = Object.assign({},this.state);
-  console.log(copyState)
   let board = {
     email : copyState.email,
     title : copyState.newBoardTitle,
     color : copyState.newBoardColor,
     list : []    
   }
-  let status;  
 
-    fetch(URL, {
+  await fetch(URL, {
       method: 'POST',
       body: JSON.stringify(board),
       headers: {
@@ -216,15 +225,8 @@ createBoard(){
     })
     .then(res => console.log(res))
     .catch(error => console.error(error))
-  // let currentBoards = this.state.allBoards.slice();
-  // // 맨 뒤에 빈 값을 추가(슬롯 확장)) 후, addBoard를 뒤로 한칸 밀어놓는다.
-  // currentBoards.push(newBoards)     
-  // currentBoards[currentBoards.length-1] = currentBoards[currentBoards.length-2];
-  
-  // currentBoards[currentBoards.length-2] = newBoards;
 
-  // this.separateElement(currentBoards);
-  // this.setState({allBoards : currentBoards});
+    await this.loadBoards()
 }
 async loadBoards(){
   let boardsURL = "http://localhost:4000/users/boards/"
@@ -241,7 +243,6 @@ async loadBoards(){
     })
   })
   .catch(err => console.error(err))
-  await this.loadBoards()
 }
 gotoMainPage(){
   this.props.history.push("/")
@@ -256,7 +257,7 @@ async componentDidMount(){
   .then(res => res.json())
   .then(res => {
     this.setState({
-      id : res._id,
+      user_id : res._id,
       email : res.email,
       username : res.username
     })
@@ -265,18 +266,17 @@ async componentDidMount(){
   .catch(err => console.error(err))
 
   await this.loadBoards();
-
 }
 
 render(){    
   return (
       <div>
-        <BoardHeader gotoMainPage = {this.gotoMainPage}/>
+        <BoardHeader gotoMainPage = {this.gotoMainPage} username = {this.state.username}/>
         <div style = {styles.listsWrapper}>
           <h3>전체 보드</h3>
             <ul style = {styles.ulStyle} >            
-            {          
-                this.separateElement(this.state.allBoards)
+            {     
+                this.separateElement(this.state.allBoards)     
             }           
             </ul>
         </div>

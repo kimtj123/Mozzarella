@@ -93,7 +93,7 @@ export default class SignUp extends React.Component {
         return (
         <div style = {styles.wrapper}>
             <div>
-                <img style = {styles.image} src = {require('./common/Mozzarello.png')}/>          
+                <img style = {styles.image} src = {require('./common/Mozzarello.png')} alt = "Mozzallo logo"/>          
             </div>
             <div style = {styles.backGround}>
                 <div style = {styles.titleWrapper}>

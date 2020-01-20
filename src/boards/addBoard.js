@@ -48,7 +48,7 @@ render(){
               <ul className = "selectTheme" style = {styles.selectTheme}>
                 {
                   styles.gridItems.map((val, index) => 
-                  <li className = {`gridItem`} style = {styles.gridItem} >
+                  <li className = {`gridItem`} style = {styles.gridItem} key = {"gridItem" + index}>
                     <button type = "button" style = {val} onClick = {this.props.getBoardColor}></button>
                   </li>            
                   )
@@ -138,7 +138,7 @@ const styles = {
   closeButton : {
     background: "none",
     border: "none",
-    color: "#fff",
+    color: "black",
     float: "right",
     height: "28px",
     padding: 0,   

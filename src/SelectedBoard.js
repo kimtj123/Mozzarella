@@ -3,7 +3,7 @@ import React from 'react';
 import AddlistArea from './selectedBoard/addlistArea';
 import AddlistContent from './selectedBoard/addlistContent';
 import BoardHeader from './common/BoardHeader';
-import BoardList from './selectedBoard/boardList';
+import CardList from './selectedBoard/cardList';
 
 import AddIcon from '@material-ui/icons/Add';
 
@@ -13,41 +13,50 @@ export default class Boards extends React.Component {
   constructor(props){
     super(props)
     this.state = {
-        cardList : 
-        [
-            {
-                "title" : "ToDo",
-                "list" : ["내용1","내용2","내용3"]
-            },
-            {   
-                "title" : "Doing",
-                "list" : ["내용2-1","내용2-2","내용2-3"]
-            },   
-            {   
-                "title" : "Done",
-                "list" : ["내용3-1","내용3-2","내용3-3"]
-            },      
-        ],
+        boardID : localStorage.getItem("boardID"),
+        cardList : [],
         add : "",
         listContent : "",
-        clickedList : ""
+        clickedList : null
     }
+    console.log(localStorage.getItem("boardID") === this.state.boardID)
 
     this.addCard = this.addCard.bind(this);
     this.addList = this.addList.bind(this);
-    this.changeCotent = this.changeCotent.bind(this);
+    this.changeTitle = this.changeTitle.bind(this);
+    this.changeContent = this.changeContent.bind(this);
     this.listContent = this.listContent.bind(this);
+    this.loadCard = this.loadCard.bind(this);
     this.openAddList = this.openAddList.bind(this);
-    this.removeCard = this.removeCard.bind(this);
+    this.deleteCard = this.deleteCard.bind(this);
     this.deleteList = this.deleteList.bind(this);
     this.getListName = this.getListName.bind(this);
 }
 
-getListName(e){
-console.log(e.target.title)
-this.setState( {clickedList : e.target.title})
-    
+loadCard(){
+    let URL = "http://localhost:4000/users/boards/cards/" + this.state.boardID
+
+    fetch(URL)
+    .then(res => res.json())
+    .then(res => {
+        console.log("카드 받기 :: ",res);
+        console.log("카드 받기 :: ",res.cards);
+        this.setState({cardList : res.cards});
+    })
 }
+
+getListName(e){
+    console.log("getListName :: ",this.state.clickedList)
+if(this.state.clickedList === null)
+{
+    this.setState( { clickedList : e.currentTarget.id })        
+}
+else
+{
+    this.setState( { clickedList : null })        
+}
+}
+
 openAddList(e){
     let nameVal = e.target.getAttribute('name')    
     this.setState({ add : nameVal })               
@@ -55,40 +64,107 @@ openAddList(e){
 }
 
 addCard(e){
+    let URL = "http://localhost:4000/users/boards/cards"
+    let card = {
+        "boardID" : this.state.boardID,
+        "title" : " ", // 그냥 빈 스트링은 전송이 안된다..
+        "list" : []
+    }
     
-    let currentList = Object.assign([], this.state.cardList);
-    currentList.push(
-        {   
-            "title" : "",
-            "list" : []
+    let options = {
+        method: 'POST',
+        body: JSON.stringify(card),
+        headers: {
+        'Content-Type': 'application/json',          
+        },
+        credentials: 'include'
+    }
+    fetch(URL, options)
+    .then(res => res.json)
+    .then(res => {
+        this.loadCard()
+        console.log(res)
         }
     )
-    this.setState({
-        cardList : currentList,
-        listContent : ""
-    }) 
 }
+
+deleteCard(e){        
+    let deleteCard = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
+    let URL = `http://localhost:4000/users/boards/deletecard/${deleteCard}`
+
+    // const newCard = this.state.cardList.filter(card => {
+    //     console.log("card_id :: ", card._id)
+    //     console.log("deleteCard :: ", deleteCard)
+    //     return card._id !== deleteCard
+    //     }
+    //     )
+    // this.setState({cardList : newCard})
+    fetch(URL, { 
+        method: 'delete',
+       })
+      .then(res => res.text()) // json 형식이 아닌 text 형식으로 해야 json 오류가 나지 않는다.
+      .then(res => this.loadCard());
+}
+
 addList(e){
-    
-    if(this.state.listContent !== "")
-    {   
-        let newCardList = Object.assign([], this.state.cardList);
+    let cardOfAddList = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
+    let newList = this.state.listContent.slice()
+    console.log(this.state.add)
+    console.log(cardOfAddList)
+    console.log(newList)
+    let URL = "http://localhost:4000/users/boards/cards/list/" + cardOfAddList
+    let body = {
+        "content" : newList
+    }
+    fetch(URL, { 
+        method : "PATCH" ,
+        headers: {
+            'Content-Type': 'application/json',          
+        },
+        body : JSON.stringify(body)  
+    })
+    .then(res => res.json())
+    .then(res => this.loadCard()) 
+
+    // if(this.state.listContent !== "")
+    // {   
+    //     let newCardList = Object.assign([], this.state.cardList);
         
-        newCardList.forEach((val,index) => {
-            if(e.currentTarget.title === val.title)
-            {
-                val.list.push(this.state.listContent)
-            }
-        })
-        this.setState({
-            cardList : newCardList,
-            listContent : ""
-        })
-        console.log(this.state)
-        
-    } 
+    //     newCardList.forEach((val,index) => {
+    //         if(e.currentTarget.title === val.title)
+    //         {
+    //             val.list.push(this.state.listContent)
+    //         }
+    //     })
+    //     this.setState({
+    //         cardList : newCardList,
+    //         listContent : ""
+    //     })
+    //     console.log(this.state)        
+    // } 
 }
-changeCotent(e){
+
+changeTitle(e){
+    let changeTitleOfCard = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
+    let newTitle = e.currentTarget.value
+    let URL = "http://localhost:4000/users/boards/cards/title/" + changeTitleOfCard
+    let body = {
+        "title" : newTitle
+    }
+    fetch(URL, { 
+        method : "PATCH" ,
+        headers: {
+            'Content-Type': 'application/json',          
+        },
+        body : JSON.stringify(body)  
+    })
+    .then(res => res.json())
+    .then(res => console.log(res)) 
+    // 굳이 fetch를 안해도  input value라 바뀌어있으므로 서버에 요청할 필요 없지 않을까..
+}
+
+changeContent(e){    
+    console.log("changeContent ::", e.target)
     let newCardList = Object.assign([], this.state.cardList);
     newCardList.forEach((val, index) => {
         if(val.title === e.target.defaultValue) // 카드 제목 수정
@@ -127,13 +203,13 @@ listContent(e){
     let content = e.target.value      
     this.setState({listContent : content});
 }
-removeCard(e){        
-    console.log("REMOVE!!")
-    const newCard = this.state.cardList.filter(card => card.title !== e.currentTarget.title)
-    this.setState({cardList : newCard})
+
+async componentDidMount(){
+    await this.loadCard();
 }
+
 render(){     
-    console.log(this.state.clickedList)
+    console.log("보드아이디", this.state.boardID)
     return (
         <div  style = {{width : "100%", height : "99vh"}}>
             <BoardHeader />        
@@ -147,21 +223,23 @@ render(){
                     style = {styles.addListWrapper} 
                     key = {val.title+index} 
                     title = {val.title}
+                    id = {val._id}
                 >
                     <form>                                          
-                        <BoardList 
-                            id = {val.id}
+                        <CardList 
+                            id = {val._id}
                             list = {val.list}
                             title = {val.title}           
                             
                             clickedList = {this.state.clickedList}
                             
                             addList = {this.addList}
-                            changeCotent = {this.changeCotent}
+                            changeContent = {this.changeContent}
+                            changeTitle = {this.changeTitle}
                             deleteList = {this.deleteList}
                             focus = {this.state.focus}
                             listContent = {this.listContent}
-                            removeCard = {this.removeCard}    
+                            deleteCard = {this.deleteCard}    
                             getListName = {this.getListName}                                                           
                         /> 
                         <AddlistArea
