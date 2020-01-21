@@ -8,8 +8,6 @@ import SignUp from './SignUp';
 import SelectedBoard from './SelectedBoard';
 import Boards from './Boards';
 
-
-
 import './App.css';
 
 export default function App() {  
