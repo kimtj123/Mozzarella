@@ -13,6 +13,7 @@ export default class Boards extends React.Component {
   constructor(props){
     super(props)
     this.state = {
+        username : "",
         boardID : localStorage.getItem("boardID"),
         cardList : [],
         add : "",
@@ -28,9 +29,14 @@ export default class Boards extends React.Component {
     this.listContent = this.listContent.bind(this);
     this.loadCard = this.loadCard.bind(this);
     this.openAddList = this.openAddList.bind(this);
+    this.closeAddList = this.closeAddList.bind(this);
     this.deleteCard = this.deleteCard.bind(this);
     this.deleteList = this.deleteList.bind(this);
     this.getListName = this.getListName.bind(this);
+    this.gotoMainPage = this.gotoMainPage.bind(this);
+}
+gotoMainPage(){
+    this.props.history.push("/")
 }
 
 loadCard(){
@@ -39,17 +45,20 @@ loadCard(){
     fetch(URL)
     .then(res => res.json())
     .then(res => {
-        console.log("카드 받기 :: ",res);
-        console.log("카드 받기 :: ",res.cards);
         this.setState({cardList : res.cards});
     })
 }
 
 getListName(e){
     console.log("getListName :: ",this.state.clickedList)
+    console.log("e.currentTarget.id :: ", e.currentTarget.id)
 if(this.state.clickedList === null)
 {
-    this.setState( { clickedList : e.currentTarget.id })        
+    if(e.currentTarget.id !== undefined)
+        this.setState( { clickedList : e.currentTarget.id })       
+    else
+                this.setState( { clickedList : e.currentTarget.id })       
+
 }
 else
 {
@@ -60,7 +69,9 @@ else
 openAddList(e){
     let nameVal = e.target.getAttribute('name')    
     this.setState({ add : nameVal })               
-    console.log("콘텐츠 추가 :: ", this.state.add)
+}
+closeAddList(e){
+    this.setState({ add : null})
 }
 
 addCard(e){
@@ -92,13 +103,6 @@ deleteCard(e){
     let deleteCard = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
     let URL = `http://localhost:4000/users/boards/deletecard/${deleteCard}`
 
-    // const newCard = this.state.cardList.filter(card => {
-    //     console.log("card_id :: ", card._id)
-    //     console.log("deleteCard :: ", deleteCard)
-    //     return card._id !== deleteCard
-    //     }
-    //     )
-    // this.setState({cardList : newCard})
     fetch(URL, { 
         method: 'delete',
        })
@@ -107,11 +111,9 @@ deleteCard(e){
 }
 
 addList(e){
+    console.log(e)
     let cardOfAddList = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
-    let newList = this.state.listContent.slice()
-    console.log(this.state.add)
-    console.log(cardOfAddList)
-    console.log(newList)
+    let newList = this.state.listContent.slice() 
     let URL = "http://localhost:4000/users/boards/cards/list/" + cardOfAddList
     let body = {
         "content" : newList
@@ -124,24 +126,7 @@ addList(e){
         body : JSON.stringify(body)  
     })
     .then(res => res.json())
-    .then(res => this.loadCard()) 
-
-    // if(this.state.listContent !== "")
-    // {   
-    //     let newCardList = Object.assign([], this.state.cardList);
-        
-    //     newCardList.forEach((val,index) => {
-    //         if(e.currentTarget.title === val.title)
-    //         {
-    //             val.list.push(this.state.listContent)
-    //         }
-    //     })
-    //     this.setState({
-    //         cardList : newCardList,
-    //         listContent : ""
-    //     })
-    //     console.log(this.state)        
-    // } 
+    .then(res => this.loadCard())     
 }
 
 changeTitle(e){
@@ -164,55 +149,72 @@ changeTitle(e){
 }
 
 changeContent(e){    
-    console.log("changeContent ::", e.target)
-    let newCardList = Object.assign([], this.state.cardList);
-    newCardList.forEach((val, index) => {
-        if(val.title === e.target.defaultValue) // 카드 제목 수정
-        {
-            val.title = e.target.value;
-        }
-        else if(val.list.includes(e.target.defaultValue)) // 카드 리스트 내용 수정
-        {                        
-            let indexWillChange = val.list.indexOf(e.target.defaultValue);
-            val.list[indexWillChange] = e.target.value;  
-        }
-    });
-    this.setState({
-        cardList: newCardList,        
+    let listID = e.currentTarget.id
+    let changeContentOfCard = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
+    let newContent = e.currentTarget.value
+
+    console.log("newContent ::", newContent, " type :: ", typeof newContent)
+    console.log("listID ::", listID)
+    console.log("changeContentOfCard ::", changeContentOfCard)
+
+    let URL = `http://localhost:4000/users/boards/cards/changelist/${changeContentOfCard}/${listID}`
+    // let body = {
+    //     "content" : newContent
+    // }
+    // console.log(body)
+    fetch(URL, {
+        method : "PUT",
+        headers: {
+            'Content-Type': 'application/json',          
+        },
+        body : JSON.stringify({"content" : newContent})
     })
+    .then(res => res.json)
+    .then(res => this.loadCard());    
 }
 deleteList(e){
-    let newCardList = Object.assign([], this.state.cardList);
-    let listName = e.currentTarget.parentNode.children[0].innerText
-    console.log(e.currentTarget.parentNode.children[0])
-
-    for(let i = 0; i < newCardList.length; i++)
-    {        
-        for(let j = 0; j < newCardList[i]["list"].length; j++)
-        {            
-            if(newCardList[i]["list"][j] === listName)
-            {
-                newCardList[i]["list"].splice(j,1);
-            }
-        }
-    }
-    this.setState({cardList : newCardList})
     
+    let cardID = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
+    let listID = e.currentTarget.parentNode.children[0].id
+    let URL = `http://localhost:4000/users/boards/cards/deletelist/${cardID}/${listID}`
+    
+    fetch(URL, {
+        method : "PUT",
+        body : JSON.stringify({})
+    })
+    .then(res => res.json)
+    .then(res => this.loadCard());    
 }
-listContent(e){        
-    let content = e.target.value      
+listContent(e){            
+    let content = e.currentTarget.value      
     this.setState({listContent : content});
 }
 
-async componentDidMount(){
+async componentDidMount(){    
+    let checkURL = "http://localhost:4000/users/check"
+    let option = {
+      credentials: "include"
+    }
+
+    await fetch(checkURL, option)
+    .then(res => res.json())
+    .then(res => {
+        this.setState({
+        username : res.username
+        })
+    })
+    .catch(err => console.error(err))
+
     await this.loadCard();
 }
 
 render(){     
-    console.log("보드아이디", this.state.boardID)
     return (
         <div  style = {{width : "100%", height : "99vh"}}>
-            <BoardHeader />        
+            <BoardHeader  
+                gotoMainPage = {this.gotoMainPage}
+                username = {this.state.username}
+            />        
             <div className = "boardTitle">
                 <h3>보드명</h3>
             </div>
@@ -249,8 +251,10 @@ render(){
                         />                                                                                                                    
                         <AddlistContent 
                             addList = {this.addList}
+                            getListName = {this.getListName}
                             listContent = {this.listContent}
-                            openAddList = {this.openAddList} 
+                            openAddList = {this.openAddList}
+                            closeAddList = {this.closeAddList} 
                             state = {this.state.add}
                             title = {val.title}
                         />                         

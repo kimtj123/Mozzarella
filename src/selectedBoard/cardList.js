@@ -13,13 +13,13 @@ export default class BoardList extends React.Component{
             list : this.props.list
         }   
     }
+    
     render(){
-    console.log(this.props)
     let list = this.props.list
 
     return (
         <div>
-            <div style = {{display : "inline-flex"}}>
+            <div style = {{display : "inline-flex", width : "100%"}}>
                 <input className = "list-name-input" 
                     style = {styles.listNameInput} 
                     placeholder = "제목"                                                               
@@ -36,7 +36,6 @@ export default class BoardList extends React.Component{
             </div>    
             {
                 list.map((val,index) => {
-                    console.log("cardList :: ", val)
                    return (
                         <div className = "listCardDetailWrapper" 
                         style = {styles.listCardDetailWrapper} 
@@ -44,15 +43,17 @@ export default class BoardList extends React.Component{
                         title = {this.props.title}                    
                         >
                         {
-                             this.props.clickedList !== val.id ?
+                             this.props.clickedList !== val._id ?
                              <span // 클릭 시 display none
-                                id = {val.id}
+                                id = {val._id}
                                 style = {styles.listDetails}
                                 onClick = {this.props.getListName}
                             >
                                 {val.content}
                             </span>       :
-                            <textarea className = "listDetailsInput"
+                            <textarea 
+                            id = {val._id}
+                            className = "listDetailsInput"
                             autoFocus="autoFocus"
                             onFocus={function(e) {
                                 var val = e.target.value;
@@ -64,7 +65,10 @@ export default class BoardList extends React.Component{
                             cols = "50"
                             placeholder = "내용"
                             onChange = {this.props.listContent}
-                            onBlur = {this.props.changeContent, this.props.getListName}
+                            onBlur = {async (e) =>{
+                                await this.props.changeContent(e)
+                                await this.props.getListName(e)
+                            }}
                             name = {val.content}
                             defaultValue = {val.content}                            
                             />                           
@@ -101,7 +105,7 @@ listNameInput: {
     border: "none",
     borderRadius: "3px",
     boxShadow: "none",
-    padding: "4px 72px 4px 8px",
+    padding: "4px 8px 4px 8px",
     fontWeight: 600,    
     lineJeight: "20px",
     width: "calc(100% - 16px)",
@@ -112,6 +116,7 @@ listCardDetailWrapper : {
     borderRadius: "3px",
     boxShadow: "0 1px 0 rgba(9,30,66,.25)",    
     display : "inline-flex",
+    overflow : "hidden",
     marginBottom: "10px",
     width: "100%"
 },
@@ -120,7 +125,7 @@ listDetails: {
     border: "none",    
     boxShadow: "none",
     borderRadius: "3px",
-    padding: "4px 72px 4px 8px",
+    padding: "4px 8px 4px 8px",
     fontWeight: 600,
     width: "calc(100% - 16px)",
     height: "20px",
@@ -131,7 +136,7 @@ listDetailsTextArea: {
     border: "none",    
     boxShadow: "none",
     borderRadius: "3px",
-    padding: "4px 72px 4px 8px",
+    padding: "4px 8px 4px 8px",
     fontWeight: 600,
     width: "calc(100% - 16px)",
     height: "60px",

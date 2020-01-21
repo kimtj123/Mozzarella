@@ -27,3 +27,22 @@ export function parseJwt (token)
 
   return JSON.parse(jsonPayload);
 };
+
+export function logout(props){
+  let URL = "http://localhost:4000/users/logout"
+  
+  fetch(URL, {
+    method: 'POST',
+    body: JSON.stringify({}),
+    headers: {
+        'Content-Type': 'application/json',
+    },
+  })
+  .then(res => {
+    if(res.status === 204)    
+    {
+      alert("로그아웃되었습니다.")
+      props.gotoMainPage();
+    }
+  })  
+}

@@ -1,4 +1,6 @@
 import React from 'react';
+import {logout} from './HelperFunctions';
+
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
@@ -23,38 +25,18 @@ const useStyles = makeStyles(theme => ({
 
 
 export default function BoardHeader(props) {
-  const classes = useStyles();
-
-  function logout(){
-    let URL = "http://localhost:4000/users/logout"
-    
-    fetch(URL, {
-      method: 'POST',
-      body: JSON.stringify({}),
-      headers: {
-          'Content-Type': 'application/json',
-      },
-    })
-    .then(res => {
-      if(res.status === 204)    
-      {
-        alert("로그아웃되었습니다.")
-        props.gotoMainPage();
-      }
-    })  
-  }
-
+  const classes = useStyles(); // Meterial UI 참조
   return (
     <div className={classes.root}>
       <AppBar position="static" style={{ background: '#2E3B55' }}>
         <Toolbar>
-          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+          <IconButton onClick = {props.gotoMainPage} edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
             <HomeIcon />
           </IconButton>
           <Typography variant="h5" className={classes.title} >
             Mozzarello
           </Typography>
-          <Button onClick = {logout} edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
+          <Button onClick = {() => {logout(props)}} edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
             로그아웃
           </Button>             
           <p>{"환영합니다. " + props.username + " 님"}</p>

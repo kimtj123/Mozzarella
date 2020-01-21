@@ -19,7 +19,7 @@ export default class Boards extends React.Component {
       hoverTarget : '',
       modal : false ,
       newBoardTitle : '',
-      newBoardColor : 'white',
+      newBoardColor : '#FE2E2E',
     }
 
     this.gotoMainPage = this.gotoMainPage.bind(this);
@@ -50,12 +50,6 @@ async deleteBoard(e){
   .then(res => console.log(res));
 
   await this.loadBoards();
-  // // newBoard = newBoard.filter((board,index) => {
-  //   return board.id !== deleteTarget    
-  // })  
-  // this.setState({
-  //   allBoards : newBoard
-  // })
 }
 getBoardTitle(e){
   let boardTitle =  e.target.value
@@ -70,7 +64,10 @@ openModal(){
   this.setState({modal : true})
 } 
 closeModal(){
-  this.setState({modal : false})
+  this.setState({
+    modal : false,
+    newBoardTitle :  ""
+  })
 } 
 
 multipleElements(Boards) {
@@ -226,6 +223,7 @@ async createBoard(){
     .then(res => console.log(res))
     .catch(error => console.error(error))
 
+    await this.closeModal()
     await this.loadBoards()
 }
 async loadBoards(){
@@ -281,6 +279,7 @@ render(){
             </ul>
         </div>
         <AddBoard           
+          newBoardTitle= {this.state.newBoardTitle}
           createBoard = {this.createBoard} 
           closeModal = {this.closeModal}
           getBoardTitle = {this.getBoardTitle}

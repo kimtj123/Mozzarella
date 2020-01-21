@@ -12,7 +12,7 @@ export default class addBoard extends React.Component {
   }
 render(){      
   let inputTitle = {
-    backgroundColor: this.props.newBoardColor || "skyblue" ,
+    backgroundColor: this.props.newBoardColor || "#FE2E2E" ,
     borderRadius: "3px",
     boxSizing: "border-box", 
     display: "inline-flex",
@@ -37,7 +37,8 @@ render(){
           <div className = "formContatiner" style = {styles.formContatiner}>            
             <div className = "inputTitle" style = {inputTitle}>
               <input 
-                onChange = {this.props.getBoardTitle}
+                value = {this.props.newBoardTitle}
+                onChange = {this.props.getBoardTitle}                
                 style = {styles.inputStyle} 
                 placeholder = "보드명을 입력해주세요."
                 />
@@ -173,7 +174,7 @@ const styles = {
       display: "list-item",
     },
     {
-      backgroundColor : "#642EFE",
+      backgroundColor : "indigo",
       border: "none",
       borderRadius: "3px",
       height: "28px",
@@ -191,7 +192,7 @@ const styles = {
       display: "list-item",
     },
     {
-      backgroundColor : "#FFFFFF",
+      backgroundColor : "cornflowerblue",
       border: "none",
       borderRadius: "3px",
       height: "28px",
