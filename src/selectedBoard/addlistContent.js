@@ -7,7 +7,6 @@ export default class addlistContent extends React.Component{
     constructor(props){
         super(props)
         this.state = {
-            textarea : ''
         }
         this.cleanTextArea = this.cleanTextArea.bind(this);
     }
@@ -15,7 +14,6 @@ export default class addlistContent extends React.Component{
         e.target.value = ""
     }
     render(){
-        console.log("텍스트 :: ", this.state.textarea)
     return (
         <div className = "addCardWrapper" 
             style = {
@@ -26,25 +24,19 @@ export default class addlistContent extends React.Component{
                 <textarea className = {`addCardTextArea`}
                     style = {styles.listDetailsInput} 
                     placeholder = "내용을 입력하세요."
-                    onBlur = {async (e) => {
-                        await this.cleanTextArea(e)
-                        await this.props.closeAddList()
-                    }}
+                    onBlur = {this.cleanTextArea}
                     onChange = {this.props.listContent}                    
                     />                 
             </div>        
             <div className = "addCardButtonWrapper" style = {{display : "flex"}}>
                 <Button variant="contained" color="primary" 
-                onClick = {async (e) => {
-                    await this.props.addList(e)
-                    // await this.changeText(e)
-                }} 
-                title = {this.props.title}>
-                    리스트   추가
+                    onClick = {this.props.addList}
+                    title = {this.props.title}>
+                        리스트   추가
                 </Button>     
                 <IconButton 
-                style = {styles.closeListElements}         
-                onClick = {this.props.openAddList}
+                    style = {styles.closeListElements}         
+                    onClick = {this.props.openAddList}
                 >
                     <CloseIcon style={{ fontSize: 36 }}/>
                 </IconButton>   
