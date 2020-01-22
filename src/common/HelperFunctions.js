@@ -34,9 +34,10 @@ export function logout(props){
   fetch(URL, {
     method: 'POST',
     body: JSON.stringify({}),
+    credentials: 'include',
     headers: {
         'Content-Type': 'application/json',
-    },
+    },    
   })
   .then(res => {
     if(res.status === 204)    
