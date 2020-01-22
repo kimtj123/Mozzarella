@@ -116,10 +116,13 @@ multipleElements(Boards) {
               outMouseStyle     
             }             
           >            
-            <Link style = {styles.aTag} 
+            <Link style = {styles.aTag} title = {Boards[i].title}
             // 새로고침하면 props가 저장이 안된다. 고로 localstorage에 저장해 값을 넘기도록 하자
             // 처음에 Boards[i]._id로 넘겨주었지만 마지막 값만이 리턴된다. var도 아닌데 왜그러는지 모르것네
-              onClick = {(e) => localStorage.setItem("boardID",e.currentTarget.parentNode.className)}
+              onClick = {(e) => {
+                localStorage.setItem("boardID",e.currentTarget.parentNode.className)         
+                localStorage.setItem("boardTitle",e.currentTarget.title)       
+              }}
               to = {{
                 pathname: "/SelectedBoard",
                 }} >        

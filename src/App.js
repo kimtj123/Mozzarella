@@ -7,6 +7,7 @@ import Login from './Login';
 import SignUp from './SignUp';
 import SelectedBoard from './SelectedBoard';
 import Boards from './Boards';
+import MyInfo from './MyInfo';
 
 import './App.css';
 
@@ -19,6 +20,7 @@ export default function App() {
       <Route path = '/SignUp' component = {SignUp} />
       <Route path = '/Boards' component = {Boards} />
       <Route path = '/SelectedBoard' component = {SelectedBoard} />      
+      <Route path = '/MyInfo' component = {MyInfo} />      
     </Router>
   );
 }

@@ -16,14 +16,14 @@ export default class BoardList extends React.Component{
     
     render(){
     let list = this.props.list
-
+    console.log(this.props.title)
     return (
         <div>
             <div style = {{display : "inline-flex", width : "100%"}}>
                 <input className = "list-name-input" 
                     style = {styles.listNameInput} 
                     placeholder = "제목"                                                               
-                    defaultValue = {this.props.title}
+                    defaultValue = {this.props.title === " " ? null : this.props.title}
                     onBlur = {this.props.changeTitle}
                 >
                 </input>

@@ -15,6 +15,7 @@ export default class Boards extends React.Component {
     this.state = {
         username : "",
         boardID : localStorage.getItem("boardID"),
+        boardTitle : localStorage.getItem("boardTitle"),
         cardList : [],
         add : "",
         listContent : "",
@@ -111,9 +112,12 @@ deleteCard(e){
 }
 
 addList(e){
-    console.log(e)
     let cardOfAddList = e.currentTarget.parentNode.parentNode.parentNode.parentNode.id
     let newList = this.state.listContent.slice() 
+    console.log("listContent :: ", this.state.listContent);
+    console.log("cardOfAddList :: ", cardOfAddList);
+    console.log("newList :: ", newList);
+
     let URL = "http://localhost:4000/users/boards/cards/list/" + cardOfAddList
     let body = {
         "content" : newList
@@ -187,6 +191,7 @@ deleteList(e){
 }
 listContent(e){            
     let content = e.currentTarget.value      
+    console.log(content)
     this.setState({listContent : content});
 }
 
@@ -209,6 +214,7 @@ async componentDidMount(){
 }
 
 render(){     
+    console.log(localStorage.getItem("boardTitle"))
     return (
         <div  style = {{width : "100%", height : "99vh"}}>
             <BoardHeader  
@@ -216,10 +222,10 @@ render(){
                 username = {this.state.username}
             />        
             <div className = "boardTitle">
-                <h3>보드명</h3>
+                <h3>{this.state.boardTitle}</h3>
             </div>
             <div style = {{display: "inline-flex"}}>         
-            {
+            {                
                 this.state.cardList.map((val,index)=> 
                 <div className = "addListWrapper" 
                     style = {styles.addListWrapper} 
@@ -245,6 +251,7 @@ render(){
                             getListName = {this.getListName}                                                           
                         /> 
                         <AddlistArea
+                            addList = {this.addList}
                             openAddList = {this.openAddList} 
                             state = {this.state.add} 
                             title = {val.title}

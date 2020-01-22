@@ -1,5 +1,7 @@
 import React from 'react';
-import {logout} from './HelperFunctions';
+
+import { BrowserRouter as Router, Link } from "react-router-dom";
+import { logout } from './HelperFunctions';
 
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
@@ -36,6 +38,11 @@ export default function BoardHeader(props) {
           <Typography variant="h5" className={classes.title} >
             Mozzarello
           </Typography>
+          <Link to ="/MyInfo" style = {{textDecoration: "none", color : "white"}}>
+            <Button edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
+              내 정보
+            </Button>     
+          </Link>
           <Button onClick = {() => {logout(props)}} edge="start" className={classes.menuButton} color="inherit" aria-label="menu" >
             로그아웃
           </Button>             
